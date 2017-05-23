@@ -1,0 +1,40 @@
+<resources>
+    <!-- Application -->
+    <string name="app_name">Git Nav. Drom.ru</string>
+
+    <!-- Toolbar -->
+
+    <!-- Menu -->
+    <string name="menu_toolbar_login">Log In</string>
+    <string name="menu_toolbar_logout">Log Out</string>
+    <string name="menu_toolbar_search">Search</string>
+
+    <!-- Debug -->
+    <string name="text_debug">Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum.</string>
+
+    <!-- Common -->
+    <string name="txt_wait">Please wait...</string>
+    <string name="error_no_network_connection">Error! No Network connection.</string>
+    <string name="message_error">Error!</string>
+
+    <!-- Splash screen -->
+    <string name="txt_designed_by">This is test task designed by Semyonov</string>
+
+    <!-- Log in screen -->
+    <string name="txt_login">Login</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_skip_log_in">Skip authorization >></string>
+    <string name="txt_no_desc">The author did not leave a description</string>
+    <string name="btn_enter">Log in</string>
+    <string name="warning_error_login">Please check login</string>
+    <string name="warning_error_password">Please check password</string>
+    <string name="error_authorization">Error! Incorrect login or password.</string>
+
+    <!-- Navigation screen -->
+    <string name="warning_no_result_search_query">No result</string>
+
+    <!-- Item Navigation -->
+    <string name="txt_name_repository">Name of repository: </string>
+    <string name="txt_description">Description: </string>
+
+</resources>

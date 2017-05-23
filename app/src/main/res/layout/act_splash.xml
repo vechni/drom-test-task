@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background">
+
+    <TextView
+        android:id="@+id/frg_splash_txt_name_app"
+        style="@style/TextView.SplashScreen"
+        android:layout_centerInParent="true"
+        android:text="@string/app_name"
+        android:textSize="@dimen/font_name_app"/>
+
+    <TextView
+        style="@style/TextView.SplashScreen"
+        android:layout_below="@+id/frg_splash_txt_name_app"
+        android:layout_centerHorizontal="true"
+        android:text="@string/txt_designed_by"
+        android:textSize="@dimen/font_large"/>
+
+</RelativeLayout>
