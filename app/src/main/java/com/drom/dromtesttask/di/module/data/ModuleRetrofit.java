@@ -16,24 +16,24 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class ModuleRetrofit {
-
+public class ModuleRetrofit
+{
     private Retrofit retrofit;
     private OkHttpClient okHttpClient;
     private HttpLoggingInterceptor logging = null;
 
-    public ModuleRetrofit() {
+    public ModuleRetrofit(){
         addHttpLogging();
         initHttpClient();
         initRetrofit();
     }
 
-    private void addHttpLogging() {
+    private void addHttpLogging(){
         logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 
-    private void initHttpClient() {
+    private void initHttpClient(){
         okHttpClient = new OkHttpClient().newBuilder()
                 .addInterceptor(logging)
                 .connectTimeout(NetworkUtils.CONNECT_TIMEOUT, TimeUnit.SECONDS)
@@ -42,7 +42,7 @@ public class ModuleRetrofit {
                 .build();
     }
 
-    private void initRetrofit() {
+    private void initRetrofit(){
         retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.URL_BACKEND)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -53,7 +53,7 @@ public class ModuleRetrofit {
 
     @Provides
     @Singleton
-    RestApi providesRestApi() {
+    RestApi providesRestApi(){
         return retrofit.create(RestApi.class);
     }
 }

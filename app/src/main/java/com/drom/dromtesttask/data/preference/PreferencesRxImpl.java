@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.drom.dromtesttask.common.interfaces.StatusSavePreferences;
 import com.drom.dromtesttask.common.utils.PreferencesUtils;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.UserDTO;
 import com.google.gson.Gson;
 
 import io.reactivex.Observable;
@@ -20,11 +20,11 @@ public class PreferencesRxImpl implements Preferences.RxPref {
         gson = new Gson();
     }
 
-    public Observable<Integer> saveUser(User user) {
+    public Observable<Integer> saveUser(UserDTO user) {
         return Observable.just(saveUserFunc(user));
     }
 
-    private Integer saveUserFunc(User user) {
+    private Integer saveUserFunc(UserDTO user) {
         SharedPreferences.Editor editor = pref.edit();
         String jsonObj = gson.toJson(user);
         editor.putString(PreferencesUtils.PREF_USER, jsonObj);
@@ -32,12 +32,12 @@ public class PreferencesRxImpl implements Preferences.RxPref {
         return StatusSavePreferences.OK;
     }
 
-    public Observable<User> getUser() {
+    public Observable<UserDTO> getUser() {
         return Observable.just(getUserFunc());
     }
 
-    private User getUserFunc() {
+    private UserDTO getUserFunc() {
         String json = pref.getString(PreferencesUtils.PREF_USER, "");
-        return gson.fromJson(json, User.class);
+        return gson.fromJson(json, UserDTO.class);
     }
 }

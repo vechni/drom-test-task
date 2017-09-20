@@ -10,9 +10,9 @@ import javax.inject.Named;
 import dagger.Component;
 
 @ScopeActivity
-@Component(dependencies = ComponentApplication.class, modules = ModuleActivity.class)
-public interface ComponentActivity {
-
-    @Named("Activity")
+@Component( dependencies = ComponentApplication.class, modules = ModuleActivity.class )
+public interface ComponentActivity
+{
+    @Named( "Activity" )
     Activity activity();
 }

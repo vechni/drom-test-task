@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -18,8 +19,6 @@ import com.arellomobile.mvp.presenter.PresenterType;
 import com.drom.dromtesttask.R;
 import com.drom.dromtesttask.common.mvp.BaseActivity;
 import com.drom.dromtesttask.common.view.EndlessRecyclerViewScrollListener;
-import com.drom.dromtesttask.model.RepositoryItem;
-import com.drom.dromtesttask.model.StateEndlessRecycler;
 import com.drom.dromtesttask.module.act_log_in.LogInActivity;
 
 import java.util.List;
@@ -27,19 +26,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NavigationActivity extends BaseActivity implements NavigationContract.View {
+public class NavigationActivity
+        extends BaseActivity
+        implements NavigationContract.View
+{
 
-    public static final String TAG = "tag_main_act";
+    public static final String TAG = NavigationActivity.class.getSimpleName();
     public static final String CURRENT_PARAM_QUERY_SEARCH_KEY = "current_param_query_search_key";
     public static final String IS_ICONIFIED_SEARCH_VIEW_KEY = "is_iconified_search_view_key";
-    public static final String IS_FOCUSED_SEARCH_VIEW_KEY = "is_focused_search_view_key";
     public static final String CURRENT_PAGE_KEY = "current_page_key";
 
-    @BindView(R.id.act_navigation_rv_repositories) RecyclerView rvRepositories;
-    @BindView(R.id.act_navigation_txt_warning) TextView txtWarning;
+    @BindView( R.id.act_navigation_rv_repositories ) RecyclerView rvRepositories;
+    @BindView( R.id.act_navigation_txt_warning ) TextView txtWarning;
     private MenuItem itemMenuLogin;
     private MenuItem itemMenuLogOut;
-    private List<RepositoryItem> list;
+    private List<RepositoryViewModel> list;
     private NavigationAdapter adapter;
     private EndlessRecyclerViewScrollListener endlessScrollListener;
     private StateEndlessRecycler stateEndlessRecycler = null;
@@ -47,20 +48,17 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
     private SearchView searchView = null;
     private boolean isIconifiedSearchView;
     private String paramSearch = null;
-
-    @InjectPresenter(type = PresenterType.LOCAL) NavigationPresenter presenter;
-
-    // region - Lifecycle -
+    @InjectPresenter( type = PresenterType.LOCAL ) NavigationPresenter presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState ){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.act_navigation);
 
         ButterKnife.bind(this);
 
-        if (savedInstanceState != null) {
+        if( savedInstanceState != null ){
             paramSearch = savedInstanceState.getString(CURRENT_PARAM_QUERY_SEARCH_KEY);
             isIconifiedSearchView = savedInstanceState.getBoolean(IS_ICONIFIED_SEARCH_VIEW_KEY);
             stateEndlessRecycler = savedInstanceState.getParcelable(CURRENT_PAGE_KEY);
@@ -70,9 +68,9 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState( Bundle outState ){
         super.onSaveInstanceState(outState);
-        if (searchView.getQuery() != null) {
+        if( searchView.getQuery() != null ){
             String query = searchView.getQuery().toString();
             boolean isIconified = searchView.isIconified();
             outState.putString(CURRENT_PARAM_QUERY_SEARCH_KEY, query);
@@ -82,13 +80,8 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
         outState.putParcelable(CURRENT_PAGE_KEY, state);
     }
 
-    // endregion
-
-
-    // region - Event Menu -
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu( Menu menu ){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
 
@@ -103,8 +96,8 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected( MenuItem item ){
+        switch( item.getItemId() ){
             case R.id.menu_toolbar_login:
                 navigateToLogInScreen();
                 return true;
@@ -116,103 +109,87 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
         }
     }
 
-    // endregion
-
-
-    // region - Navigation -
-
-    public void navigateToLogInScreen() {
+    public void navigateToLogInScreen(){
         Intent mainIntent = new Intent(NavigationActivity.this, LogInActivity.class);
         startActivity(mainIntent);
         finish();
     }
 
-    // endregion
-
-
-    // region - Event handlers -
-
-    // endregion
-
-
-    // region - Contract -
-
     @Override
-    public void showAuthorisedMenuToolbar() {
+    public void showAuthorisedMenuToolbar(){
         itemMenuLogin.setVisible(false);
         itemMenuLogOut.setVisible(true);
     }
 
     @Override
-    public void showNotAuthorisedMenuToolbar() {
+    public void showNotAuthorisedMenuToolbar(){
         itemMenuLogin.setVisible(true);
         itemMenuLogOut.setVisible(false);
     }
 
     @Override
-    public void startWaitDialog() {
+    public void startWaitDialog(){
         String message = this.getString(R.string.txt_wait);
         openWaitDialog(message, null);
     }
 
     @Override
-    public void finishWaitDialog() {
+    public void finishWaitDialog(){
         closeWaitDialog();
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showMessage( @NonNull final String message ){
         showToastShort(message);
     }
 
     @Override
-    public void showWarning(String message) {
+    public void showWarning( @NonNull final String message ){
         rvRepositories.setAdapter(null);
         txtWarning.setText(message);
         txtWarning.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void showSearchResult(List<RepositoryItem> list) {
+    public void showSearchResult( @NonNull final List<RepositoryViewModel> list ){
         hideWarning();
 
         this.list = list;
 
-        if (isRotateScreen) isRotateScreen = false;
-        else endlessScrollListener.resetState();
+        if( isRotateScreen ){
+            isRotateScreen = false;
+        }else{
+            endlessScrollListener.resetState();
+        }
 
         adapter = new NavigationAdapter(this, list);
         rvRepositories.setAdapter(adapter);
     }
 
     @Override
-    public void addLoadedData(List<RepositoryItem> list) {
+    public void addLoadedData( @NonNull final List<RepositoryViewModel> list ){
         this.list.addAll(list);
         int fromNumber = adapter.getItemCount();
         adapter.notifyItemInserted(fromNumber);
     }
 
-    // endregion
-
-
-    // region - Methods -
-
-    private void initUix() {
+    private void initUix(){
         initToolbar();
         initRecyclerView();
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(){
         LinearLayoutManager layoutMgr = new LinearLayoutManager(this);
 
-        endlessScrollListener = new EndlessRecyclerViewScrollListener(layoutMgr) {
+        endlessScrollListener = new EndlessRecyclerViewScrollListener(layoutMgr)
+        {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore( int page, int totalItemsCount, RecyclerView view ){
                 presenter.loadNextData(page + 1);
             }
         };
 
-        if (stateEndlessRecycler != null) {
+        if( stateEndlessRecycler != null ){
             endlessScrollListener.setCurrentState(stateEndlessRecycler);
         }
 
@@ -220,22 +197,22 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
         rvRepositories.addOnScrollListener(endlessScrollListener);
     }
 
-    private void hideWarning() {
+    private void hideWarning(){
         txtWarning.setVisibility(View.GONE);
     }
 
-    private void setTextChangesListenerOnSearchView(Menu menu) {
+    private void setTextChangesListenerOnSearchView( Menu menu ){
         MenuItem searchItem = menu.findItem(R.id.menu_toolbar_search);
         SearchManager searchManager = (SearchManager) this.getSystemService(Context.SEARCH_SERVICE);
 
-        if (searchItem != null) {
+        if( searchItem != null ){
             searchView = (SearchView) searchItem.getActionView();
         }
-        if (searchView != null) {
+        if( searchView != null ){
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
         }
 
-        if (paramSearch != null) {
+        if( paramSearch != null ){
             searchView.setIconified(isIconifiedSearchView);
             searchView.setQuery(paramSearch, true);
             searchView.clearFocus();
@@ -243,7 +220,5 @@ public class NavigationActivity extends BaseActivity implements NavigationContra
 
         presenter.setTextChangesListenerOnSearchView(searchView);
     }
-
-    // endregion
 }
 

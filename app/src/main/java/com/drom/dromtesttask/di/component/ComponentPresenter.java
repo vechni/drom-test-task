@@ -8,12 +8,12 @@ import com.drom.dromtesttask.module.act_splash.SplashPresenter;
 import dagger.Component;
 
 @ScopePresenter
-@Component(dependencies = ComponentApplication.class)
-public interface ComponentPresenter {
+@Component( dependencies = ComponentApplication.class )
+public interface ComponentPresenter
+{
+    void inject( SplashPresenter presenter );
 
-    void inject(SplashPresenter presenter);
+    void inject( LogInPresenter presenter );
 
-    void inject(LogInPresenter presenter);
-
-    void inject(NavigationPresenter presenter);
+    void inject( NavigationPresenter presenter );
 }

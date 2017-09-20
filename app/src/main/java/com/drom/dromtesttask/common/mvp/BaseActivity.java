@@ -16,13 +16,14 @@ import com.drom.dromtesttask.di.component.ComponentActivity;
 import com.drom.dromtesttask.di.component.DaggerComponentActivity;
 import com.drom.dromtesttask.di.module.ModuleActivity;
 
-public abstract class BaseActivity extends MvpAppCompatActivity {
-
+public abstract class BaseActivity
+        extends MvpAppCompatActivity
+{
     private ComponentActivity component;
     private ProgressDialog progressDialog;
 
-    protected ComponentActivity getComponentActivity() {
-        if (component == null) {
+    protected ComponentActivity getComponentActivity(){
+        if( component == null ){
             component = DaggerComponentActivity
                     .builder()
                     .moduleActivity(new ModuleActivity(this))
@@ -32,13 +33,13 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         return component;
     }
 
-    protected void initToolbar() {
+    protected void initToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
-    protected void openWaitDialog(String message, DialogInterface.OnCancelListener listener) {
+    protected void openWaitDialog( String message, DialogInterface.OnCancelListener listener ){
         closeWaitDialog();
 
         progressDialog = new ProgressDialog(this);
@@ -49,41 +50,43 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         progressDialog.show();
     }
 
-    protected void closeWaitDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+    protected void closeWaitDialog(){
+        if( progressDialog != null && progressDialog.isShowing() ){
+            progressDialog.dismiss();
+        }
     }
 
-    protected void showToastShort(String message) {
+    protected void showToastShort( String message ){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    protected void showToastLong(String message) {
+    protected void showToastLong( String message ){
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    protected void showToastLong(@StringRes int resId) {
+    protected void showToastLong( @StringRes int resId ){
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
     }
 
-    protected void showToastShort(@StringRes int resId) {
+    protected void showToastShort( @StringRes int resId ){
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
     }
 
-    protected void hideKeyboard() {
+    protected void hideKeyboard(){
         View view = getCurrentFocus();
 
-        if (view != null) {
+        if( view != null ){
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    protected void showKeyboard() {
+    protected void showKeyboard(){
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    protected void goBack() {
+    protected void goBack(){
         finish();
     }
 }

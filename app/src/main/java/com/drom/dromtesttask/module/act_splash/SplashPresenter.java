@@ -9,33 +9,16 @@ import com.drom.dromtesttask.data.DataLayer;
 import javax.inject.Inject;
 
 @InjectViewState
-public class SplashPresenter extends BasePresenter<SplashContract.View> implements SplashContract.Presenter {
-
-    public static final String TAG = "tag_splash_prs";
+public class SplashPresenter
+        extends BasePresenter<SplashContract.View>
+        implements SplashContract.Presenter
+{
+    public static final String TAG = SplashPresenter.class.getSimpleName();
 
     @Inject DataLayer dataLayer;
     @Inject Context context;
 
-    SplashPresenter() {
+    SplashPresenter(){
         getPresenterComponent().inject(this);
     }
-
-    // region - Lifecycle -
-
-    // endregion
-
-
-    // region - Contract -
-
-    // endregion
-
-
-    // region - EventBus Handlers -
-
-    // endregion
-
-
-    // region - Methods -
-
-    // endregion
 }

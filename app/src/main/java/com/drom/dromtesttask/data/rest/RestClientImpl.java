@@ -6,8 +6,8 @@ import android.net.NetworkInfo;
 import android.util.Base64;
 
 import com.drom.dromtesttask.common.utils.NetworkUtils;
-import com.drom.dromtesttask.model.RepositoryItem;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.RepositoryItemDTO;
+import com.drom.dromtesttask.model.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class RestClientImpl implements RestClient {
     }
 
     @Override
-    public Observable<User> requestAuth(String login, String password) {
+    public Observable<UserDTO> requestAuth( String login, String password) {
 
         String value = generateHeaderAuth(login, password);
 
@@ -54,14 +54,14 @@ public class RestClientImpl implements RestClient {
     }
 
     @Override
-    public Observable<List<RepositoryItem>> requestSearchRepositories(String param, int page) {
+    public Observable<List<RepositoryItemDTO>> requestSearchRepositories( String param, int page) {
         return restApi.requestSearchRepositories(param, page)
                 .map(response -> {
                     checkResponse(response);
 
-                    List<RepositoryItem> listRepository = response.body().getItems();
+                    List<RepositoryItemDTO> listRepository = response.body().getItems();
                     if (listRepository == null) {
-                        return new ArrayList<RepositoryItem>();
+                        return new ArrayList<RepositoryItemDTO>();
                     }
 
                     return listRepository;

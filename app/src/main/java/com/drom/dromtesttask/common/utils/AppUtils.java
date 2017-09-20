@@ -5,13 +5,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 
-public class AppUtils {
-
-    public static String getPackageNameApp(Context context) {
+public class AppUtils
+{
+    public static String getPackageNameApp( Context context ){
         return context.getPackageName();
     }
 
-    public static int getVersionCodeApp(Context context) throws NameNotFoundException {
+    public static int getVersionCodeApp( Context context ) throws NameNotFoundException{
         String packageName = getPackageNameApp(context);
 
         PackageManager manager = context.getPackageManager();
@@ -19,7 +19,7 @@ public class AppUtils {
         return info.versionCode;
     }
 
-    public static String getVersionNameApp(Context context) throws NameNotFoundException {
+    public static String getVersionNameApp( Context context ) throws NameNotFoundException{
         String packageName = getPackageNameApp(context);
 
         PackageManager manager = context.getPackageManager();

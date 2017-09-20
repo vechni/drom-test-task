@@ -8,12 +8,13 @@ import com.drom.dromtesttask.di.module.ModuleApplication;
 import com.drom.dromtesttask.di.module.data.ModulePreferences;
 import com.drom.dromtesttask.di.module.data.ModuleRest;
 
-public class GitNavDromApplication extends Application {
-
+public class GitNavDromApplication
+        extends Application
+{
     private static ComponentApplication component;
 
     @Override
-    public void onCreate() {
+    public void onCreate(){
         super.onCreate();
 
         component = DaggerComponentApplication
@@ -24,7 +25,7 @@ public class GitNavDromApplication extends Application {
                 .build();
     }
 
-    public static ComponentApplication getComponentApplication() {
+    public static ComponentApplication getComponentApplication(){
         return component;
     }
 }

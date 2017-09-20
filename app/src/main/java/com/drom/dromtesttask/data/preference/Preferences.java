@@ -1,6 +1,6 @@
 package com.drom.dromtesttask.data.preference;
 
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.UserDTO;
 
 import io.reactivex.Observable;
 
@@ -8,15 +8,15 @@ public interface Preferences {
 
     interface ImpPref {
 
-        void saveUser(User user);
+        void saveUser(UserDTO user);
 
-        User getUser();
+        UserDTO getUser();
     }
 
     interface RxPref {
 
-        Observable<Integer> saveUser(User user);
+        Observable<Integer> saveUser(UserDTO user);
 
-        Observable<User> getUser();
+        Observable<UserDTO> getUser();
     }
 }

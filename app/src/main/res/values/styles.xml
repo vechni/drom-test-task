@@ -1,84 +1,84 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name = "AppTheme" parent = "Theme.AppCompat">
 
-        <item name="colorPrimary">@color/colorPrimary</item>         <!-- Toolbar -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!-- Status bar -->
-        <item name="colorAccent">@color/colorAccent</item>           <!-- UI elements -->
+        <item name = "colorPrimary">@color/colorPrimary</item>         <!-- Toolbar -->
+        <item name = "colorPrimaryDark">@color/colorPrimaryDark</item> <!-- Status bar -->
+        <item name = "colorAccent">@color/colorAccent</item>           <!-- UI elements -->
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="elevation">0dp</item>
+    <style name = "AppTheme.NoActionBar" parent = "AppTheme">
+        <item name = "windowActionBar">false</item>
+        <item name = "windowNoTitle">true</item>
+        <item name = "elevation">0dp</item>
     </style>
 
-    <style name="EditText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name = "EditText">
+        <item name = "android:layout_width">wrap_content</item>
+        <item name = "android:layout_height">wrap_content</item>
     </style>
 
-    <style name="TextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/font_largest</item>
+    <style name = "TextView">
+        <item name = "android:layout_width">wrap_content</item>
+        <item name = "android:layout_height">wrap_content</item>
+        <item name = "android:textColor">@color/white</item>
+        <item name = "android:textSize">@dimen/font_largest</item>
     </style>
 
-    <style name="Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/button_height</item>
-        <item name="android:textSize">@dimen/font_normal</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">@color/colorPrimaryDark</item>
+    <style name = "Button">
+        <item name = "android:layout_width">match_parent</item>
+        <item name = "android:layout_height">@dimen/button_height</item>
+        <item name = "android:textSize">@dimen/font_normal</item>
+        <item name = "android:textColor">@color/white</item>
+        <item name = "android:textAllCaps">true</item>
+        <item name = "android:gravity">center</item>
+        <item name = "android:background">@color/colorPrimaryDark</item>
     </style>
 
     <!-- Splash styles -->
-    <style name="TextView.SplashScreen" parent="TextView">
-        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
-        <item name="android:layout_marginRight">@dimen/margin_normal</item>
-        <item name="android:gravity">center</item>
+    <style name = "TextView.SplashScreen" parent = "TextView">
+        <item name = "android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name = "android:layout_marginRight">@dimen/margin_normal</item>
+        <item name = "android:gravity">center</item>
     </style>
 
     <!-- Log In styles -->
-    <style name="EditText.LogIn" parent="EditText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:theme">@style/EditTextLogIn</item>
+    <style name = "EditText.LogIn" parent = "EditText">
+        <item name = "android:layout_width">match_parent</item>
+        <item name = "android:maxLines">1</item>
+        <item name = "android:textColor">@color/white</item>
+        <item name = "android:theme">@style/EditTextLogIn</item>
     </style>
 
-    <style name="TextInputLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="errorEnabled">true</item>
-        <item name="errorTextAppearance">@style/errorTextAppearanceStyle</item>
-        <item name="hintTextAppearance">@style/hintTextAppearanceStyle</item>
+    <style name = "TextInputLayoutStyle">
+        <item name = "android:layout_width">match_parent</item>
+        <item name = "android:layout_height">wrap_content</item>
+        <item name = "errorEnabled">true</item>
+        <item name = "errorTextAppearance">@style/errorTextAppearanceStyle</item>
+        <item name = "hintTextAppearance">@style/hintTextAppearanceStyle</item>
     </style>
 
-    <style name="hintTextAppearanceStyle" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/turquoise</item>
+    <style name = "hintTextAppearanceStyle" parent = "TextAppearance.AppCompat.Small">
+        <item name = "android:textColor">@color/turquoise</item>
     </style>
 
-    <style name="errorTextAppearanceStyle" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/error</item>
+    <style name = "errorTextAppearanceStyle" parent = "TextAppearance.AppCompat.Small">
+        <item name = "android:textColor">@color/error</item>
     </style>
 
-    <style name="EditTextLogIn">
-        <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/turquoise</item>
+    <style name = "EditTextLogIn">
+        <item name = "colorControlNormal">@color/white</item>
+        <item name = "colorControlActivated">@color/turquoise</item>
     </style>
 
     <!-- Item Navigation screen -->
-    <style name="TextView.ItemNavigationScreen" parent="TextView">
-        <item name="android:layout_marginRight">@dimen/spacing_small</item>
-        <item name="android:layout_marginBottom">@dimen/spacing_small</item>
-        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
-        <item name="android:layout_marginTop">@dimen/margin_normal</item>
-        <item name="android:ellipsize">end</item>
+    <style name = "TextView.ItemNavigationScreen" parent = "TextView">
+        <item name = "android:layout_marginRight">@dimen/spacing_small</item>
+        <item name = "android:layout_marginBottom">@dimen/spacing_small</item>
+        <item name = "android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name = "android:layout_marginTop">@dimen/margin_normal</item>
+        <item name = "android:ellipsize">end</item>
     </style>
 
 </resources>

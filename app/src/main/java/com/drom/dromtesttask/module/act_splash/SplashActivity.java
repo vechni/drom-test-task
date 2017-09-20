@@ -13,17 +13,17 @@ import com.drom.dromtesttask.module.act_log_in.LogInActivity;
 
 import butterknife.ButterKnife;
 
-public class SplashActivity extends BaseActivity implements SplashContract.View {
+public class SplashActivity
+        extends BaseActivity
+        implements SplashContract.View
+{
+    public static final String TAG = SplashActivity.class.getSimpleName();
 
-    public static final String TAG = "tag_splash_act";
     private final int CONST_DELAY_SPLASH = 1500;
-
-    @InjectPresenter(type = PresenterType.LOCAL) SplashPresenter presenter;
-
-    // region - Lifecycle -
+    @InjectPresenter( type = PresenterType.LOCAL ) SplashPresenter presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState ){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.act_splash);
@@ -32,41 +32,25 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
         hideStatusBar();
 
-        navigateToLogIn();
+        navigateToLogInScreen();
     }
 
-    // endregion
-
-
-    // region - Event handlers -
-
-    // endregion
-
-
-    // region - Contract -
-
     @Override
-    public void navigateToLogIn() {
+    public void navigateToLogInScreen(){
         showLogInScreen();
     }
 
-    // endregion
 
-
-    // region - Methods -
-
-    private void hideStatusBar() {
+    private void hideStatusBar(){
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
-    private void showLogInScreen() {
+    private void showLogInScreen(){
         new Handler().postDelayed(() -> {
             Intent mainIntent = new Intent(SplashActivity.this, LogInActivity.class);
             startActivity(mainIntent);
             finish();
         }, CONST_DELAY_SPLASH);
     }
-
-    // endregion
 }

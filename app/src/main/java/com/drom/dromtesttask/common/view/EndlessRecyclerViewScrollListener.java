@@ -5,10 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.drom.dromtesttask.model.StateEndlessRecycler;
+import com.drom.dromtesttask.module.act_navigation.StateEndlessRecycler;
 
-public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
-
+public abstract class EndlessRecyclerViewScrollListener
+        extends RecyclerView.OnScrollListener
+{
     private int visibleThreshold = 5;
     private int currentPage = 0;
     private int previousTotalItemCount = 0;
@@ -17,26 +18,26 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     private RecyclerView.LayoutManager layoutManager;
 
-    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
+    public EndlessRecyclerViewScrollListener( LinearLayoutManager layoutManager ){
         this.layoutManager = layoutManager;
     }
 
-    public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
-        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
-    }
-
-    public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+    public EndlessRecyclerViewScrollListener( GridLayoutManager layoutManager ){
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public int getLastVisibleItem(int[] lastVisibleItemPositions) {
+    public EndlessRecyclerViewScrollListener( StaggeredGridLayoutManager layoutManager ){
+        this.layoutManager = layoutManager;
+        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
+    }
+
+    public int getLastVisibleItem( int[] lastVisibleItemPositions ){
         int maxSize = 0;
-        for (int i = 0; i < lastVisibleItemPositions.length; i++) {
-            if (i == 0) {
+        for( int i = 0; i < lastVisibleItemPositions.length; i++ ){
+            if( i == 0 ){
                 maxSize = lastVisibleItemPositions[i];
-            } else if (lastVisibleItemPositions[i] > maxSize) {
+            }else if( lastVisibleItemPositions[i] > maxSize ){
                 maxSize = lastVisibleItemPositions[i];
             }
         }
@@ -44,48 +45,48 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     @Override
-    public void onScrolled(RecyclerView view, int dx, int dy) {
+    public void onScrolled( RecyclerView view, int dx, int dy ){
         int lastVisibleItemPosition = 0;
         int totalItemCount = layoutManager.getItemCount();
 
-        if (layoutManager instanceof StaggeredGridLayoutManager) {
+        if( layoutManager instanceof StaggeredGridLayoutManager ){
             int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
             lastVisibleItemPosition = getLastVisibleItem(lastVisibleItemPositions);
-        } else if (layoutManager instanceof GridLayoutManager) {
+        }else if( layoutManager instanceof GridLayoutManager ){
             lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-        } else if (layoutManager instanceof LinearLayoutManager) {
+        }else if( layoutManager instanceof LinearLayoutManager ){
             lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
         }
 
-        if (totalItemCount < previousTotalItemCount) {
+        if( totalItemCount < previousTotalItemCount ){
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
-            if (totalItemCount == 0) {
+            if( totalItemCount == 0 ){
                 this.loading = true;
             }
         }
 
-        if (loading && (totalItemCount > previousTotalItemCount)) {
+        if( loading && (totalItemCount > previousTotalItemCount) ){
             loading = false;
             previousTotalItemCount = totalItemCount;
         }
 
-        if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
+        if( ! loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount ){
             currentPage++;
             onLoadMore(currentPage, totalItemCount, view);
             loading = true;
         }
     }
 
-    public void resetState() {
+    public void resetState(){
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
     }
 
-    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);
+    public abstract void onLoadMore( int page, int totalItemsCount, RecyclerView view );
 
-    public StateEndlessRecycler getCurrentState() {
+    public StateEndlessRecycler getCurrentState(){
         StateEndlessRecycler state = new StateEndlessRecycler();
         state.setCurrentPage(currentPage);
         state.setPreviousTotalItemCount(previousTotalItemCount);
@@ -93,7 +94,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         return state;
     }
 
-    public void setCurrentState(StateEndlessRecycler state) {
+    public void setCurrentState( StateEndlessRecycler state ){
         currentPage = state.getCurrentPage();
         previousTotalItemCount = state.getPreviousTotalItemCount();
         loading = state.isLoading();

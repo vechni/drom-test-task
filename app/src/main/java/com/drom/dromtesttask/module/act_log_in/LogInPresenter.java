@@ -1,12 +1,13 @@
 package com.drom.dromtesttask.module.act_log_in;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.drom.dromtesttask.R;
 import com.drom.dromtesttask.common.mvp.BasePresenter;
 import com.drom.dromtesttask.data.DataLayer;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.UserDTO;
 
 import javax.inject.Inject;
 
@@ -15,32 +16,27 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class LogInPresenter extends BasePresenter<LogInContract.View> implements LogInContract.Presenter {
-
-    public static final String TAG = "tag_log_in_prs";
+public class LogInPresenter
+        extends BasePresenter<LogInContract.View>
+        implements LogInContract.Presenter
+{
+    public static final String TAG = LogInPresenter.class.getSimpleName();
 
     @Inject DataLayer dataLayer;
     @Inject Context context;
 
-    LogInPresenter() {
+    LogInPresenter(){
         getPresenterComponent().inject(this);
     }
 
-    // region - Lifecycle -
-
-    // endregion
-
-
-    // region - Contract -
-
     @Override
-    public void skipLogin() {
-        unsubscribeOnDestroy(saveUserInPref(new User()));
+    public void skipLogin(){
+        unsubscribeOnDestroy(saveUserInPref(new UserDTO()));
     }
 
     @Override
-    public void checkLogin(String login, String password) {
-        if (isNotNetworkConnection()) {
+    public void checkLogin( @NonNull final String login, @NonNull final String password ){
+        if( isNotNetworkConnection() ){
             String message = context.getString(R.string.error_no_network_connection);
             getViewState().showMessage(message);
             return;
@@ -51,21 +47,11 @@ public class LogInPresenter extends BasePresenter<LogInContract.View> implements
         unsubscribeOnDestroy(requestAuth(login, password));
     }
 
-    // endregion
-
-
-    // region - EventBus Handlers -
-
-    // endregion
-
-
-    // region - Methods -
-
-    private boolean isNotNetworkConnection() {
-        return !dataLayer.restApi.isNetworkConnection();
+    private boolean isNotNetworkConnection(){
+        return ! dataLayer.restApi.isNetworkConnection();
     }
 
-    private Disposable saveUserInPref(User user) {
+    private Disposable saveUserInPref( @NonNull final UserDTO user ){
         return dataLayer.prefRx.saveUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -77,7 +63,7 @@ public class LogInPresenter extends BasePresenter<LogInContract.View> implements
                 });
     }
 
-    private Disposable requestAuth(String login, String password) {
+    private Disposable requestAuth( @NonNull final String login, @NonNull final String password ){
         return dataLayer.restApi.requestAuth(login, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,18 +72,16 @@ public class LogInPresenter extends BasePresenter<LogInContract.View> implements
                 });
     }
 
-    private void processOnResultRequestAuth(User user) {
+    private void processOnResultRequestAuth( @NonNull final UserDTO user ){
         getViewState().finishWaitDialog();
         dataLayer.pref.saveUser(user);
         getViewState().navigateToMainScreen();
     }
 
-    private void processOnErrorResultRequestAuth() {
+    private void processOnErrorResultRequestAuth(){
         getViewState().finishWaitDialog();
         String message = context.getString(R.string.error_authorization);
         getViewState().showMessage(message);
         getViewState().showErrorRegistration();
     }
-
-    // endregion
 }

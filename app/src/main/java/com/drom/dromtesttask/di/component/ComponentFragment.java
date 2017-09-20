@@ -11,10 +11,10 @@ import javax.inject.Named;
 import dagger.Component;
 
 @ScopeFragment
-@Component(dependencies = ComponentApplication.class, modules = ModuleFragment.class)
-public interface ComponentFragment {
-
-    @Named("FrgActivity")
+@Component( dependencies = ComponentApplication.class, modules = ModuleFragment.class )
+public interface ComponentFragment
+{
+    @Named( "FrgActivity" )
     Activity activity();
 
     Fragment fragment();

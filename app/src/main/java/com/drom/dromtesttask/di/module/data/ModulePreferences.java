@@ -1,6 +1,7 @@
 package com.drom.dromtesttask.di.module.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.drom.dromtesttask.data.preference.Preferences;
 import com.drom.dromtesttask.data.preference.PreferencesImpl;
@@ -12,17 +13,17 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class ModulePreferences {
-
+public class ModulePreferences
+{
     @Provides
     @Singleton
-    Preferences.ImpPref providesPreferencesImpl(Context context) {
+    Preferences.ImpPref providesPreferencesImpl( @NonNull final Context context ){
         return new PreferencesImpl(context);
     }
 
     @Provides
     @Singleton
-    Preferences.RxPref PreferencesRxImpl(Context context) {
+    Preferences.RxPref PreferencesRxImpl( @NonNull final Context context ){
         return new PreferencesRxImpl(context);
     }
 }

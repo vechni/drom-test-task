@@ -16,21 +16,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LogInActivity extends BaseActivity implements LogInContract.View {
+public class LogInActivity
+        extends BaseActivity
+        implements LogInContract.View
+{
+    public static final String TAG = LogInActivity.class.getSimpleName();
 
-    public static final String TAG = "tag_log_in_act";
-
-    @BindView(R.id.act_log_in_et_login) EditText etLogin;
-    @BindView(R.id.act_log_in_et_password) EditText etPassword;
-    @BindView(R.id.act_log_in_ti_login) TextInputLayout tiLogin;
-    @BindView(R.id.act_log_in_ti_password) TextInputLayout tiPassword;
-
-    @InjectPresenter(type = PresenterType.LOCAL) LogInPresenter presenter;
-
-    // region - Lifecycle -
+    @BindView( R.id.act_log_in_et_login ) EditText etLogin;
+    @BindView( R.id.act_log_in_et_password ) EditText etPassword;
+    @BindView( R.id.act_log_in_ti_login ) TextInputLayout tiLogin;
+    @BindView( R.id.act_log_in_ti_password ) TextInputLayout tiPassword;
+    @InjectPresenter( type = PresenterType.LOCAL ) LogInPresenter presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState ){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.act_log_in);
@@ -38,47 +37,37 @@ public class LogInActivity extends BaseActivity implements LogInContract.View {
         ButterKnife.bind(this);
     }
 
-    // endregion
-
-
-    // region - Event handlers -
-
-    @OnClick(R.id.act_log_in_txt_skip)
-    public void clickBtnSkip(View view) {
+    @OnClick( R.id.act_log_in_txt_skip )
+    public void onClickBtnSkip( View view ){
         presenter.skipLogin();
     }
 
-    @OnClick(R.id.act_log_in_btn_enter)
-    public void clickBtnEnter(View view) {
+    @OnClick( R.id.act_log_in_btn_enter )
+    public void onClickBtnEnter( View view ){
         String login = etLogin.getText().toString();
         String password = etPassword.getText().toString();
 
         presenter.checkLogin(login, password);
     }
 
-    // endregion
-
-
-    // region - Contract -
-
     @Override
-    public void startWaitDialog() {
+    public void startWaitDialog(){
         String message = this.getString(R.string.txt_wait);
         openWaitDialog(message, null);
     }
 
     @Override
-    public void finishWaitDialog() {
+    public void finishWaitDialog(){
         closeWaitDialog();
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showMessage( String message ){
         showToastShort(message);
     }
 
     @Override
-    public void showErrorRegistration() {
+    public void showErrorRegistration(){
         String warningErrorLogin = getString(R.string.warning_error_login);
         String warningErrorPassword = getString(R.string.warning_error_password);
 
@@ -87,21 +76,13 @@ public class LogInActivity extends BaseActivity implements LogInContract.View {
     }
 
     @Override
-    public void navigateToMainScreen() {
+    public void navigateToMainScreen(){
         showMainScreen();
     }
 
-
-    // endregion
-
-
-    // region - Methods -
-
-    private void showMainScreen() {
+    private void showMainScreen(){
         Intent mainIntent = new Intent(LogInActivity.this, NavigationActivity.class);
         startActivity(mainIntent);
         finish();
     }
-
-    // endregion
 }

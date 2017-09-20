@@ -12,9 +12,9 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ModuleApplication.class, ModulePreferences.class, ModuleRest.class})
-public interface ComponentApplication {
-
+@Component( modules = {ModuleApplication.class, ModulePreferences.class, ModuleRest.class} )
+public interface ComponentApplication
+{
     Context context();
 
     DataLayer dataLayer();

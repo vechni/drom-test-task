@@ -4,16 +4,19 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-public class SplashContract {
+public interface SplashContract
+{
+    interface View
+            extends MvpView
+    {
 
-    public interface View extends MvpView {
-
-        @StateStrategyType(SkipStrategy.class)
-        void navigateToLogIn();
+        @StateStrategyType( SkipStrategy.class )
+        void navigateToLogInScreen();
     }
 
 
-    public interface Presenter {
+    interface Presenter
+    {
 
     }
 }

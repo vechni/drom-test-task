@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.drom.dromtesttask.common.utils.PreferencesUtils;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.UserDTO;
 import com.google.gson.Gson;
 
 
@@ -18,15 +18,15 @@ public class PreferencesImpl implements Preferences.ImpPref {
         gson = new Gson();
     }
 
-    public void saveUser(User user) {
+    public void saveUser(UserDTO user) {
         SharedPreferences.Editor editor = pref.edit();
         String jsonObj = gson.toJson(user);
         editor.putString(PreferencesUtils.PREF_USER, jsonObj);
         editor.apply();
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         String json = pref.getString(PreferencesUtils.PREF_USER, "");
-        return gson.fromJson(json, User.class);
+        return gson.fromJson(json, UserDTO.class);
     }
 }

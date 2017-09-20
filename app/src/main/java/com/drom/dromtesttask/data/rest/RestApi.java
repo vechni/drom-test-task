@@ -1,8 +1,8 @@
 package com.drom.dromtesttask.data.rest;
 
 import com.drom.dromtesttask.common.utils.NetworkUtils;
-import com.drom.dromtesttask.model.RepositoryResponse;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.RepositoryResponseDTO;
+import com.drom.dromtesttask.model.UserDTO;
 
 import io.reactivex.Observable;
 import retrofit2.Response;
@@ -13,11 +13,11 @@ import retrofit2.http.Query;
 public interface RestApi {
 
     @GET(NetworkUtils.URL_METHOD_AUTHORIZATION)
-    Observable<Response<User>> requestAuth(@Header("Authorization") String value);
+    Observable<Response<UserDTO>> requestAuth( @Header( "Authorization") String value);
 
     @GET(NetworkUtils.URL_METHOD_SEARCH_REPOSITORIES)
-    Observable<Response<RepositoryResponse>> requestSearchRepositories(@Query("q") String value,
-                                                                       @Query("page") int page);
+    Observable<Response<RepositoryResponseDTO>> requestSearchRepositories( @Query( "q") String value,
+                                                                           @Query("page") int page);
 }
 
 

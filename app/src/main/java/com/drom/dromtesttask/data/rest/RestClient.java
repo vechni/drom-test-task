@@ -1,7 +1,7 @@
 package com.drom.dromtesttask.data.rest;
 
-import com.drom.dromtesttask.model.RepositoryItem;
-import com.drom.dromtesttask.model.User;
+import com.drom.dromtesttask.model.RepositoryItemDTO;
+import com.drom.dromtesttask.model.UserDTO;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface RestClient {
 
     boolean isNetworkConnection();
 
-    Observable<User> requestAuth(String login, String password);
+    Observable<UserDTO> requestAuth( String login, String password);
 
-    Observable<List<RepositoryItem>> requestSearchRepositories(String param, int page);
+    Observable<List<RepositoryItemDTO>> requestSearchRepositories( String param, int page);
 }

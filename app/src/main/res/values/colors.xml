@@ -2,22 +2,22 @@
 <resources>
 
     <!-- Main app colors -->
-    <color name="colorPrimary">#44535A</color>
-    <color name="colorPrimaryDark">#263238</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name = "colorPrimary">#44535A</color>
+    <color name = "colorPrimaryDark">#263238</color>
+    <color name = "colorAccent">#ffffff</color>
 
     <!-- RGB -->
-    <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
-    <color name="transparent">#00000000</color>
-    <color name="turquoise">#41ccfe</color>
+    <color name = "white">#ffffff</color>
+    <color name = "black">#000000</color>
+    <color name = "transparent">#00000000</color>
+    <color name = "turquoise">#41ccfe</color>
 
     <!-- Design colors -->
-    <color name="error">#ff1b2c</color>
+    <color name = "error">#ff1b2c</color>
 
     <!-- Main app UI elements colors -->
-    <color name="toolbar">@color/colorPrimary</color>
-    <color name="background">#212121</color>
+    <color name = "toolbar">@color/colorPrimary</color>
+    <color name = "background">#212121</color>
 
     <!-- UI elements colors -->
 

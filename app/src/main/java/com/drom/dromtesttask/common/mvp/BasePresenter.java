@@ -11,13 +11,14 @@ import com.drom.dromtesttask.di.component.DaggerComponentPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-public class BasePresenter<V extends MvpView> extends MvpPresenter<V> {
-
+public class BasePresenter<V extends MvpView>
+        extends MvpPresenter<V>
+{
     private ComponentPresenter component;
     private CompositeDisposable compositeSubscription = new CompositeDisposable();
 
-    protected ComponentPresenter getPresenterComponent() {
-        if (component == null) {
+    protected ComponentPresenter getPresenterComponent(){
+        if( component == null ){
             component = DaggerComponentPresenter.builder()
                     .componentApplication(GitNavDromApplication.getComponentApplication())
                     .build();
@@ -26,12 +27,12 @@ public class BasePresenter<V extends MvpView> extends MvpPresenter<V> {
         return component;
     }
 
-    protected void unsubscribeOnDestroy(@NonNull Disposable disposable) {
+    protected void unsubscribeOnDestroy( @NonNull Disposable disposable ){
         compositeSubscription.add(disposable);
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(){
         super.onDestroy();
         compositeSubscription.clear();
     }
