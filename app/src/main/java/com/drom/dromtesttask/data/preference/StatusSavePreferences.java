@@ -1,4 +1,4 @@
-package com.drom.dromtesttask.common.interfaces;
+package com.drom.dromtesttask.data.preference;
 
 import android.support.annotation.IntDef;
 
@@ -9,6 +9,6 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef( {StatusSavePreferences.OK, StatusSavePreferences.ERROR} )
 public @interface StatusSavePreferences
 {
-    public static final int OK = 0;
-    public static final int ERROR = - 1;
+    int OK = 0;
+    int ERROR = -1;
 }

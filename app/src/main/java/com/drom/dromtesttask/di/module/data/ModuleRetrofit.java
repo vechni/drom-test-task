@@ -1,6 +1,10 @@
 package com.drom.dromtesttask.di.module.data;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.drom.dromtesttask.common.utils.NetworkUtils;
+import com.drom.dromtesttask.data.rest.ConnectivityInterceptor;
 import com.drom.dromtesttask.data.rest.RestApi;
 
 import java.util.concurrent.TimeUnit;
@@ -22,9 +26,9 @@ public class ModuleRetrofit
     private OkHttpClient okHttpClient;
     private HttpLoggingInterceptor logging = null;
 
-    public ModuleRetrofit(){
+    public ModuleRetrofit( @NonNull final Context context ){
         addHttpLogging();
-        initHttpClient();
+        initHttpClient(context);
         initRetrofit();
     }
 
@@ -33,9 +37,10 @@ public class ModuleRetrofit
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 
-    private void initHttpClient(){
+    private void initHttpClient( @NonNull final Context context ){
         okHttpClient = new OkHttpClient().newBuilder()
                 .addInterceptor(logging)
+                .addInterceptor(new ConnectivityInterceptor(context))
                 .connectTimeout(NetworkUtils.CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(NetworkUtils.READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(NetworkUtils.WRITE_TIMEOUT, TimeUnit.SECONDS)
@@ -53,7 +58,7 @@ public class ModuleRetrofit
 
     @Provides
     @Singleton
-    RestApi providesRestApi(){
+    RestApi provideRestApi(){
         return retrofit.create(RestApi.class);
     }
 }

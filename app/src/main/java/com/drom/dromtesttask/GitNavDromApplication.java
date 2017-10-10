@@ -6,7 +6,7 @@ import com.drom.dromtesttask.di.component.ComponentApplication;
 import com.drom.dromtesttask.di.component.DaggerComponentApplication;
 import com.drom.dromtesttask.di.module.ModuleApplication;
 import com.drom.dromtesttask.di.module.data.ModulePreferences;
-import com.drom.dromtesttask.di.module.data.ModuleRest;
+import com.drom.dromtesttask.di.module.data.ModuleRetrofit;
 
 public class GitNavDromApplication
         extends Application
@@ -21,7 +21,7 @@ public class GitNavDromApplication
                 .builder()
                 .moduleApplication(new ModuleApplication(this))
                 .modulePreferences(new ModulePreferences())
-                .moduleRest(new ModuleRest())
+                .moduleRetrofit(new ModuleRetrofit(this))
                 .build();
     }
 

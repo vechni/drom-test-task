@@ -1,13 +1,14 @@
 package com.drom.dromtesttask.module.act_log_in;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.drom.dromtesttask.R;
 import com.drom.dromtesttask.common.mvp.BasePresenter;
 import com.drom.dromtesttask.data.DataLayer;
-import com.drom.dromtesttask.model.UserDTO;
+import com.drom.dromtesttask.data.exeptions.NoConnectivityException;
+import com.drom.dromtesttask.data.model.UserDTO;
 
 import javax.inject.Inject;
 
@@ -21,67 +22,65 @@ public class LogInPresenter
         implements LogInContract.Presenter
 {
     public static final String TAG = LogInPresenter.class.getSimpleName();
-
     @Inject DataLayer dataLayer;
-    @Inject Context context;
 
     LogInPresenter(){
         getPresenterComponent().inject(this);
     }
 
     @Override
-    public void skipLogin(){
-        unsubscribeOnDestroy(saveUserInPref(new UserDTO()));
+    public void onClickBtnSkip(){
+        unsubscribeOnDestroy(processClickBtnSkip(new UserDTO()));
     }
 
     @Override
-    public void checkLogin( @NonNull final String login, @NonNull final String password ){
-        if( isNotNetworkConnection() ){
-            String message = context.getString(R.string.error_no_network_connection);
-            getViewState().showMessage(message);
-            return;
-        }
-
-        getViewState().startWaitDialog();
-
+    public void onClickBtnLogin( @NonNull final String login, @NonNull final String password ){
+        getViewState().showWaitDialog();
         unsubscribeOnDestroy(requestAuth(login, password));
     }
 
-    private boolean isNotNetworkConnection(){
-        return ! dataLayer.restApi.isNetworkConnection();
-    }
-
-    private Disposable saveUserInPref( @NonNull final UserDTO user ){
-        return dataLayer.prefRx.saveUser(user)
+    @NonNull
+    private Disposable processClickBtnSkip( @NonNull final UserDTO user ){
+        return dataLayer.pref.saveUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    getViewState().navigateToMainScreen();
-                }, error -> {
-                    String message = context.getString(R.string.message_error);
-                    getViewState().showMessage(message);
-                });
+                .subscribe(result->processOnResultBtnSkip(),
+                           this::processOnErrorBtnSkip);
     }
 
+    private void processOnResultBtnSkip(){
+        getViewState().navigateToMainScreen(false);
+    }
+
+    private void processOnErrorBtnSkip( @NonNull final Throwable error ){
+        if( error instanceof NoConnectivityException ){
+            getViewState().showMessage(error.getMessage());
+        }else{
+            getViewState().showMessage(R.string.message_error);
+        }
+    }
+
+    @NonNull
     private Disposable requestAuth( @NonNull final String login, @NonNull final String password ){
         return dataLayer.restApi.requestAuth(login, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::processOnResultRequestAuth, error -> {
-                    processOnErrorResultRequestAuth();
-                });
+                .subscribe(this::processOnResultRequestAuth, this::processOnErrorRequestAuth);
     }
 
     private void processOnResultRequestAuth( @NonNull final UserDTO user ){
-        getViewState().finishWaitDialog();
+        getViewState().hideWaitDialog();
         dataLayer.pref.saveUser(user);
-        getViewState().navigateToMainScreen();
+        getViewState().navigateToMainScreen(true);
     }
 
-    private void processOnErrorResultRequestAuth(){
-        getViewState().finishWaitDialog();
-        String message = context.getString(R.string.error_authorization);
-        getViewState().showMessage(message);
-        getViewState().showErrorRegistration();
+    private void processOnErrorRequestAuth( @NonNull final Throwable error ){
+        getViewState().hideWaitDialog();
+        if( error instanceof NoConnectivityException ){
+            getViewState().showMessage(error.getMessage());
+        }else{
+            getViewState().showMessage(R.string.error_authorization);
+            getViewState().showErrorRegistration();
+        }
     }
 }

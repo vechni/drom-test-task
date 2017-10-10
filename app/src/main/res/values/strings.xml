@@ -14,7 +14,7 @@
 
     <!-- Common -->
     <string name = "txt_wait">Please wait...</string>
-    <string name = "error_no_network_connection">Error! No Network connection.</string>
+    <string name = "message_not_network_connection">Error! No Network connection</string>
     <string name = "message_error">Error!</string>
 
     <!-- Splash screen -->

@@ -3,26 +3,39 @@ package com.drom.dromtesttask.common.mvp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.drom.dromtesttask.GitNavDromApplication;
-import com.drom.dromtesttask.R;
 import com.drom.dromtesttask.di.component.ComponentActivity;
 import com.drom.dromtesttask.di.component.DaggerComponentActivity;
 import com.drom.dromtesttask.di.module.ModuleActivity;
+import com.drom.dromtesttask.module.UiRouter;
+
+import javax.inject.Inject;
 
 public abstract class BaseActivity
         extends MvpAppCompatActivity
 {
     private ComponentActivity component;
     private ProgressDialog progressDialog;
+    @Inject protected UiRouter uiRouter;
 
-    protected ComponentActivity getComponentActivity(){
+    @CallSuper
+    @Override
+    protected void onCreate( @Nullable Bundle savedInstanceState ){
+        super.onCreate(savedInstanceState);
+        getComponent().inject(this);
+    }
+
+    protected ComponentActivity getComponent(){
         if( component == null ){
             component = DaggerComponentActivity
                     .builder()
@@ -33,13 +46,7 @@ public abstract class BaseActivity
         return component;
     }
 
-    protected void initToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-    }
-
-    protected void openWaitDialog( String message, DialogInterface.OnCancelListener listener ){
+    protected void openWaitDialog( @NonNull final String message, @Nullable final DialogInterface.OnCancelListener listener ){
         closeWaitDialog();
 
         progressDialog = new ProgressDialog(this);
@@ -56,24 +63,24 @@ public abstract class BaseActivity
         }
     }
 
-    protected void showToastShort( String message ){
+    protected void showToastShort( @NonNull final String message ){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    protected void showToastLong( String message ){
+    protected void showToastLong( @NonNull final String message ){
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    protected void showToastLong( @StringRes int resId ){
+    protected void showToastLong( @StringRes final int resId ){
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
     }
 
-    protected void showToastShort( @StringRes int resId ){
+    protected void showToastShort( @StringRes final int resId ){
         Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show();
     }
 
     protected void hideKeyboard(){
-        View view = getCurrentFocus();
+        final View view = getCurrentFocus();
 
         if( view != null ){
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -82,11 +89,7 @@ public abstract class BaseActivity
     }
 
     protected void showKeyboard(){
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-
-    protected void goBack(){
-        finish();
     }
 }

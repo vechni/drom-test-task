@@ -1,7 +1,9 @@
 package com.drom.dromtesttask.module.act_log_in;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
@@ -10,7 +12,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
 import com.drom.dromtesttask.R;
 import com.drom.dromtesttask.common.mvp.BaseActivity;
-import com.drom.dromtesttask.module.act_navigation.NavigationActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,14 +23,14 @@ public class LogInActivity
 {
     public static final String TAG = LogInActivity.class.getSimpleName();
 
-    @BindView( R.id.act_log_in_et_login ) EditText etLogin;
-    @BindView( R.id.act_log_in_et_password ) EditText etPassword;
-    @BindView( R.id.act_log_in_ti_login ) TextInputLayout tiLogin;
-    @BindView( R.id.act_log_in_ti_password ) TextInputLayout tiPassword;
+    @BindView( R.id.act_log_in_et_login ) protected EditText etLogin;
+    @BindView( R.id.act_log_in_et_password ) protected EditText etPassword;
+    @BindView( R.id.act_log_in_ti_login ) protected TextInputLayout tiLogin;
+    @BindView( R.id.act_log_in_ti_password ) protected TextInputLayout tiPassword;
     @InjectPresenter( type = PresenterType.LOCAL ) LogInPresenter presenter;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ){
+    protected void onCreate( @Nullable final Bundle savedInstanceState ){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.act_log_in);
@@ -38,51 +39,49 @@ public class LogInActivity
     }
 
     @OnClick( R.id.act_log_in_txt_skip )
-    public void onClickBtnSkip( View view ){
-        presenter.skipLogin();
+    public void onClickBtnSkip( @NonNull final View view ){
+        presenter.onClickBtnSkip();
     }
 
     @OnClick( R.id.act_log_in_btn_enter )
-    public void onClickBtnEnter( View view ){
-        String login = etLogin.getText().toString();
-        String password = etPassword.getText().toString();
-
-        presenter.checkLogin(login, password);
+    public void onClickBtnLogin( @NonNull final View view ){
+        final String login = etLogin.getText().toString();
+        final String password = etPassword.getText().toString();
+        presenter.onClickBtnLogin(login, password);
     }
 
     @Override
-    public void startWaitDialog(){
-        String message = this.getString(R.string.txt_wait);
+    public void showWaitDialog(){
+        final String message = this.getString(R.string.txt_wait);
         openWaitDialog(message, null);
     }
 
     @Override
-    public void finishWaitDialog(){
+    public void hideWaitDialog(){
         closeWaitDialog();
     }
 
     @Override
-    public void showMessage( String message ){
+    public void showMessage( @StringRes final int resId ){
+        showToastShort(resId);
+    }
+
+    @Override
+    public void showMessage( @NonNull final String message ){
         showToastShort(message);
     }
 
     @Override
     public void showErrorRegistration(){
-        String warningErrorLogin = getString(R.string.warning_error_login);
-        String warningErrorPassword = getString(R.string.warning_error_password);
+        final String warningLogin = getString(R.string.warning_error_login);
+        final String warningPassword = getString(R.string.warning_error_password);
 
-        tiLogin.setError(warningErrorLogin);
-        tiPassword.setError(warningErrorPassword);
+        tiLogin.setError(warningLogin);
+        tiPassword.setError(warningPassword);
     }
 
     @Override
-    public void navigateToMainScreen(){
-        showMainScreen();
-    }
-
-    private void showMainScreen(){
-        Intent mainIntent = new Intent(LogInActivity.this, NavigationActivity.class);
-        startActivity(mainIntent);
-        finish();
+    public void navigateToMainScreen( boolean isAuthorized ){
+        uiRouter.openMainView(isAuthorized);
     }
 }

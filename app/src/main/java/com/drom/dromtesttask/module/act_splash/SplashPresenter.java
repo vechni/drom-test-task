@@ -1,12 +1,9 @@
 package com.drom.dromtesttask.module.act_splash;
 
-import android.content.Context;
+import android.os.CountDownTimer;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.drom.dromtesttask.common.mvp.BasePresenter;
-import com.drom.dromtesttask.data.DataLayer;
-
-import javax.inject.Inject;
 
 @InjectViewState
 public class SplashPresenter
@@ -14,11 +11,26 @@ public class SplashPresenter
         implements SplashContract.Presenter
 {
     public static final String TAG = SplashPresenter.class.getSimpleName();
-
-    @Inject DataLayer dataLayer;
-    @Inject Context context;
+    private final int CONST_DELAY_SPLASH = 1500;
 
     SplashPresenter(){
-        getPresenterComponent().inject(this);
+
     }
+
+    @Override
+    protected void onFirstViewAttach(){
+        super.onFirstViewAttach();
+        timer.start();
+    }
+
+    private final CountDownTimer timer = new CountDownTimer(CONST_DELAY_SPLASH, CONST_DELAY_SPLASH)
+    {
+        public void onTick( long millisUntilFinished ){
+        }
+
+        public void onFinish(){
+            getViewState().navigateToLogInScreen();
+        }
+    };
+
 }

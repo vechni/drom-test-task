@@ -5,14 +5,13 @@ import com.drom.dromtesttask.data.rest.RestClient;
 
 import javax.inject.Inject;
 
-public class DataLayer {
-
+public class DataLayer
+{
     @Inject public RestClient restApi;
-    @Inject public Preferences.RxPref prefRx;
-    @Inject public Preferences.ImpPref pref;
+    @Inject public Preferences.RxPref pref;
 
     @Inject
-    public DataLayer() {
+    public DataLayer(){
 
     }
 }

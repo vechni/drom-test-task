@@ -5,9 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.drom.dromtesttask.module.act_navigation.StateEndlessRecycler;
-
-public abstract class EndlessRecyclerViewScrollListener
+public abstract class OnLoadMoreListener
         extends RecyclerView.OnScrollListener
 {
     private int visibleThreshold = 5;
@@ -18,16 +16,16 @@ public abstract class EndlessRecyclerViewScrollListener
 
     private RecyclerView.LayoutManager layoutManager;
 
-    public EndlessRecyclerViewScrollListener( LinearLayoutManager layoutManager ){
+    public OnLoadMoreListener( LinearLayoutManager layoutManager ){
         this.layoutManager = layoutManager;
     }
 
-    public EndlessRecyclerViewScrollListener( GridLayoutManager layoutManager ){
+    public OnLoadMoreListener( GridLayoutManager layoutManager ){
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public EndlessRecyclerViewScrollListener( StaggeredGridLayoutManager layoutManager ){
+    public OnLoadMoreListener( StaggeredGridLayoutManager layoutManager ){
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
@@ -71,7 +69,7 @@ public abstract class EndlessRecyclerViewScrollListener
             previousTotalItemCount = totalItemCount;
         }
 
-        if( ! loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount ){
+        if( !loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount ){
             currentPage++;
             onLoadMore(currentPage, totalItemCount, view);
             loading = true;
@@ -85,18 +83,4 @@ public abstract class EndlessRecyclerViewScrollListener
     }
 
     public abstract void onLoadMore( int page, int totalItemsCount, RecyclerView view );
-
-    public StateEndlessRecycler getCurrentState(){
-        StateEndlessRecycler state = new StateEndlessRecycler();
-        state.setCurrentPage(currentPage);
-        state.setPreviousTotalItemCount(previousTotalItemCount);
-        state.setLoading(loading);
-        return state;
-    }
-
-    public void setCurrentState( StateEndlessRecycler state ){
-        currentPage = state.getCurrentPage();
-        previousTotalItemCount = state.getPreviousTotalItemCount();
-        loading = state.isLoading();
-    }
 }

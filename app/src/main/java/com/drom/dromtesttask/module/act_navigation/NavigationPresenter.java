@@ -1,20 +1,17 @@
 package com.drom.dromtesttask.module.act_navigation;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.SearchView;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.drom.dromtesttask.R;
-import com.drom.dromtesttask.common.interfaces.StatusSavePreferences;
 import com.drom.dromtesttask.common.mvp.BasePresenter;
-import com.drom.dromtesttask.common.utils.AppConst;
 import com.drom.dromtesttask.data.DataLayer;
-import com.drom.dromtesttask.model.RepositoryItemDTO;
-import com.drom.dromtesttask.model.UserDTO;
+import com.drom.dromtesttask.data.exeptions.NoConnectivityException;
+import com.drom.dromtesttask.data.model.RepositoryItemDTO;
+import com.drom.dromtesttask.data.preference.StatusSavePreferences;
+import com.drom.dromtesttask.module.act_navigation.item.RepositoryViewModel;
 import com.jakewharton.rxbinding2.widget.RxSearchView;
 
 import java.util.ArrayList;
@@ -33,140 +30,129 @@ public class NavigationPresenter
         implements NavigationContract.Presenter
 {
     public static final String TAG = NavigationPresenter.class.getSimpleName();
+    private static final String WARNING_NO_DESCRIPTION = "The author did not leave a description";
     private static final int START_LOAD_PAGE = 1;
-    public static final int NUMBER_SHORT_STRING = 1;
+    private static final int MIN_LIMIT_SEARCH_REQUEST = 1;
 
     @Inject DataLayer dataLayer;
-    @Inject Context context;
     private String paramSearch = null;
+    private int currentPage = START_LOAD_PAGE;
 
     NavigationPresenter(){
         getPresenterComponent().inject(this);
     }
 
     @Override
-    public void checkAuth(){
-        unsubscribeOnDestroy(isExistUserInPref());
+    public void onClickBtnLogIn(){
+        getViewState().navigateToLogInScreen();
     }
 
     @Override
-    public void logOut(){
-        unsubscribeOnDestroy(removeUserFromPref(new UserDTO()));
+    public void onClickBtnLogOut(){
+        unsubscribeOnDestroy(processLogOut());
     }
 
-    @Override
-    public void setTextChangesListenerOnSearchView( SearchView searchView ){
-        unsubscribeOnDestroy(requestInputSearchParam(searchView));
+    @NonNull
+    private Disposable processLogOut(){
+        return dataLayer.pref.removeUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::processOnResultLogOut, this::processOnErrorLogOut);
     }
 
-    @Override
-    public void loadNextData( int page ){
-        if( isNotNetworkConnection() ){
-            String message = context.getString(R.string.error_no_network_connection);
-            getViewState().showMessage(message);
-            return;
+    private void processOnResultLogOut( @NonNull final Integer result ){
+        if( result == StatusSavePreferences.OK ){
+            getViewState().showUnauthorizedMenu();
         }
-
-        getViewState().startWaitDialog();
-
-        unsubscribeOnDestroy(loadNextDataSearchParam(page));
     }
 
-    private Disposable isExistUserInPref(){
-        return dataLayer.prefRx.getUser()
+    private void processOnErrorLogOut( @NonNull final Throwable error ){
+        if( error instanceof NoConnectivityException ){
+            getViewState().showMessage(error.getMessage());
+        }else{
+            getViewState().showMessage(R.string.message_error);
+        }
+    }
+
+    @Override
+    public void onLoadMore(){
+        unsubscribeOnDestroy(loadMoreRepositories(currentPage));
+        currentPage += 1;
+    }
+
+    @NonNull
+    private Disposable loadMoreRepositories( final int page ){
+        getViewState().showWaitDialog();
+
+        return dataLayer.restApi.requestRepositories(paramSearch, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if( result.getLogin() != null ){
-                        getViewState().showAuthorisedMenuToolbar();
-                    }else{
-                        getViewState().showNotAuthorisedMenuToolbar();
-                    }
-                }, error -> {
-                    getViewState().showNotAuthorisedMenuToolbar();
-                });
+                .subscribe(this::processOnResultLoadMoreRepositories, this::processOnErrorLoadMoreRepositories);
     }
 
-    private Disposable removeUserFromPref( @NonNull final UserDTO user ){
-        return dataLayer.prefRx.saveUser(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if( result == StatusSavePreferences.OK ){
-                        getViewState().showNotAuthorisedMenuToolbar();
-                    }
-                }, error -> {
-                    String message = context.getString(R.string.message_error);
-                    getViewState().showMessage(message);
-                });
+    private void processOnResultLoadMoreRepositories( @NonNull final List<RepositoryItemDTO> list ){
+        getViewState().hideWaitDialog();
+        if( !list.isEmpty() ){
+            getViewState().updateNextRepositories(mapToViewModel(list));
+        }
     }
 
-    private Disposable requestInputSearchParam( @NonNull final SearchView searchView ){
+    private void processOnErrorLoadMoreRepositories( @NonNull final Throwable error ){
+        getViewState().hideWaitDialog();
+        if( error instanceof NoConnectivityException ){
+            getViewState().showMessage(error.getMessage());
+        }
+    }
+
+    @Override
+    public void onChangeSearchView( @NonNull final SearchView searchView ){
+        unsubscribeOnDestroy(requestRepositories(searchView));
+    }
+
+    @NonNull
+    private Disposable requestRepositories( @NonNull final SearchView searchView ){
         return RxSearchView.queryTextChanges(searchView)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .skip(1)
                 .debounce(1500, TimeUnit.MILLISECONDS)
-                .filter(charSequence -> charSequence.length() > NUMBER_SHORT_STRING)
+                .filter(charSequence->charSequence.length() > MIN_LIMIT_SEARCH_REQUEST)
                 .map(CharSequence::toString)
-                .map(this::checkNetworkConnectionAndReturnParamQuery)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .filter(query -> !TextUtils.isEmpty(query))
-                .map(query -> paramSearch = query)
-                .flatMap(query -> dataLayer.restApi.requestSearchRepositories(query, START_LOAD_PAGE))
+                .filter(query->!TextUtils.isEmpty(query))
+                .map(query->paramSearch = query)
+                .flatMap(query->dataLayer.restApi.requestRepositories(query, START_LOAD_PAGE))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::processOnResultSearchRequest, this::processOnErrorSearchRequest);
     }
 
     private void processOnResultSearchRequest( @NonNull final List<RepositoryItemDTO> list ){
-        getViewState().finishWaitDialog();
+        getViewState().hideWaitDialog();
 
         if( list.isEmpty() ){
-            String warning = context.getString(R.string.warning_no_result_search_query);
-            getViewState().showWarning(warning);
+            getViewState().showWarning(R.string.warning_no_result_search_query);
         }else{
-            getViewState().showSearchResult(mapToViewModel(list));
+            getViewState().hideWarning();
+            getViewState().updateRepositories(mapToViewModel(list));
         }
     }
 
     private void processOnErrorSearchRequest( @NonNull final Throwable error ){
-        getViewState().finishWaitDialog();
-        getViewState().showWarning(error.getMessage());
-    }
-
-    private Disposable loadNextDataSearchParam( int page ){
-        return dataLayer.restApi.requestSearchRepositories(paramSearch, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    getViewState().finishWaitDialog();
-                    if( !result.isEmpty() ){
-                        getViewState().addLoadedData(mapToViewModel(result));
-                    }
-                }, error -> {
-                    getViewState().finishWaitDialog();
-                });
-    }
-
-    private boolean isNotNetworkConnection(){
-        return ! dataLayer.restApi.isNetworkConnection();
-    }
-
-    private String checkNetworkConnectionAndReturnParamQuery( @NonNull final String query ){
-        Handler handler = new Handler(Looper.getMainLooper());
-        if( dataLayer.restApi.isNetworkConnection() ){
-            handler.post(() -> getViewState().startWaitDialog());
-            return query;
+        getViewState().hideWaitDialog();
+        if( error instanceof NoConnectivityException ){
+            getViewState().showMessage(error.getMessage());
         }else{
-            String message = context.getString(R.string.error_no_network_connection);
-            handler.post(() -> getViewState().showWarning(message));
-            return AppConst.EMPTY_STRING;
+            getViewState().showWarning(R.string.warning_no_result_search_query);
         }
     }
 
     private List<RepositoryViewModel> mapToViewModel( @NonNull final List<RepositoryItemDTO> items ){
-        List<RepositoryViewModel> list = new ArrayList<>();
+        final List<RepositoryViewModel> list = new ArrayList<>();
         for( RepositoryItemDTO item : items ){
-            list.add(new RepositoryViewModel(item.getFullName(), item.getDescription(), item.getOwner().getAvatarUrl()));
+            String desc = item.getDescription();
+            if( TextUtils.isEmpty(desc) ){
+                desc = WARNING_NO_DESCRIPTION;
+            }
+            list.add(new RepositoryViewModel(item.getFullName(), desc, item.getOwner().getAvatarUrl()));
         }
         return list;
     }

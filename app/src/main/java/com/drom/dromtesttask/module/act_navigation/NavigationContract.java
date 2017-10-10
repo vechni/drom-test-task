@@ -1,6 +1,7 @@
 package com.drom.dromtesttask.module.act_navigation;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.widget.SearchView;
 
 import com.arellomobile.mvp.MvpView;
@@ -8,48 +9,58 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+import com.drom.dromtesttask.module.act_navigation.item.RepositoryViewModel;
 
 import java.util.List;
 
-public interface NavigationContract
+interface NavigationContract
 {
     interface View
             extends MvpView
     {
         @StateStrategyType( SkipStrategy.class )
-        void showAuthorisedMenuToolbar();
+        void showAuthorisedMenu();
 
         @StateStrategyType( SkipStrategy.class )
-        void showNotAuthorisedMenuToolbar();
+        void showUnauthorizedMenu();
+
+        @StateStrategyType( SkipStrategy.class )
+        void showMessage( @StringRes int resId );
 
         @StateStrategyType( SkipStrategy.class )
         void showMessage( @NonNull String message );
 
         @StateStrategyType( AddToEndSingleStrategy.class )
-        void startWaitDialog();
+        void showWaitDialog();
 
         @StateStrategyType( AddToEndSingleStrategy.class )
-        void finishWaitDialog();
+        void hideWaitDialog();
 
         @StateStrategyType( SingleStateStrategy.class )
-        void showWarning( @NonNull String message );
+        void showWarning( @StringRes int resId );
 
         @StateStrategyType( SingleStateStrategy.class )
-        void showSearchResult( @NonNull List<RepositoryViewModel> list );
+        void hideWarning();
+
+        @StateStrategyType( SingleStateStrategy.class )
+        void updateRepositories( @NonNull List<RepositoryViewModel> list );
 
         @StateStrategyType( SkipStrategy.class )
-        void addLoadedData( @NonNull List<RepositoryViewModel> list );
+        void updateNextRepositories( @NonNull List<RepositoryViewModel> list );
+
+        @StateStrategyType( SkipStrategy.class )
+        void navigateToLogInScreen();
     }
 
 
     interface Presenter
     {
-        void checkAuth();
+        void onClickBtnLogOut();
 
-        void logOut();
+        void onClickBtnLogIn();
 
-        void setTextChangesListenerOnSearchView( SearchView searchView );
+        void onChangeSearchView( @NonNull SearchView searchView );
 
-        void loadNextData( int page );
+        void onLoadMore();
     }
 }

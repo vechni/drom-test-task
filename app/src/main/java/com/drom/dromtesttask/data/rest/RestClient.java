@@ -1,19 +1,23 @@
 package com.drom.dromtesttask.data.rest;
 
-import com.drom.dromtesttask.model.RepositoryItemDTO;
-import com.drom.dromtesttask.model.UserDTO;
+import android.support.annotation.NonNull;
+
+import com.drom.dromtesttask.data.model.RepositoryItemDTO;
+import com.drom.dromtesttask.data.model.UserDTO;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 
-public interface RestClient {
-
+public interface RestClient
+{
     Observable<Boolean> isNetworkConnectionAsync();
 
     boolean isNetworkConnection();
 
-    Observable<UserDTO> requestAuth( String login, String password);
+    @NonNull
+    Observable<UserDTO> requestAuth( @NonNull String login, @NonNull String password );
 
-    Observable<List<RepositoryItemDTO>> requestSearchRepositories( String param, int page);
+    @NonNull
+    Observable<List<RepositoryItemDTO>> requestRepositories( @NonNull String param, int page );
 }

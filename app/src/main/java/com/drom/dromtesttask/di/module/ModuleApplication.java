@@ -10,14 +10,14 @@ import dagger.Provides;
 @Module
 public class ModuleApplication
 {
-    private final Application application;
+    @NonNull private final Application application;
 
     public ModuleApplication( @NonNull final Application application ){
         this.application = application;
     }
 
     @Provides
-    Context providesContext(){
+    Context provideContext(){
         return application.getApplicationContext();
     }
 }

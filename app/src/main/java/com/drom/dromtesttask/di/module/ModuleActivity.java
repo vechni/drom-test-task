@@ -1,9 +1,7 @@
 package com.drom.dromtesttask.di.module;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
-
-import javax.inject.Named;
+import android.support.v7.app.AppCompatActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -11,15 +9,14 @@ import dagger.Provides;
 @Module
 public class ModuleActivity
 {
-    private final Activity activity;
+    @NonNull private final AppCompatActivity activity;
 
-    public ModuleActivity( @NonNull final Activity activity ){
+    public ModuleActivity( @NonNull final AppCompatActivity activity ){
         this.activity = activity;
     }
 
     @Provides
-    @Named( "Activity" )
-    Activity providesActivity(){
+    AppCompatActivity provideActivity(){
         return activity;
     }
 }

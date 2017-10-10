@@ -9,24 +9,25 @@ import android.util.AttributeSet;
 import com.drom.dromtesttask.R;
 import com.squareup.picasso.Picasso;
 
-public class RepositoryImageView
+public class AppImageView
         extends AppCompatImageView
 {
-    public RepositoryImageView( Context context ){
+    public AppImageView( @NonNull final Context context ){
         super(context);
     }
 
-    public RepositoryImageView( Context context, @Nullable AttributeSet attrs ){
+    public AppImageView( @NonNull final Context context, @Nullable AttributeSet attrs ){
         super(context, attrs);
     }
 
-    public RepositoryImageView( Context context, @Nullable AttributeSet attrs, int defStyleAttr ){
+    public AppImageView( @NonNull final Context context, @Nullable AttributeSet attrs, int defStyleAttr ){
         super(context, attrs, defStyleAttr);
     }
 
     public void loadImage( @NonNull final String url ){
         Picasso.with(getContext())
                 .load(url)
+                .resize(60, 60)
                 .centerCrop()
                 .placeholder(R.drawable.default_image)
                 .error(R.drawable.default_image)

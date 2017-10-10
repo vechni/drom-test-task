@@ -33,7 +33,8 @@
                 android:id = "@+id/act_log_in_et_login"
                 style = "@style/EditText.LogIn"
                 android:hint = "@string/txt_login"
-                android:inputType = "text"/>
+                android:inputType = "text"
+                android:text = "Sem_Vit@inbox.ru"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -48,7 +49,8 @@
                 android:id = "@+id/act_log_in_et_password"
                 style = "@style/EditText.LogIn"
                 android:hint = "@string/txt_password"
-                android:inputType = "textPassword"/>
+                android:inputType = "textPassword"
+                android:text = "FPoDV@W8j#UsizudRFCN"/>
 
         </android.support.design.widget.TextInputLayout>
 

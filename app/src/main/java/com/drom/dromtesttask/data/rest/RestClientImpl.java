@@ -3,11 +3,12 @@ package com.drom.dromtesttask.data.rest;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Base64;
+import android.support.annotation.NonNull;
 
+import com.drom.dromtesttask.common.utils.EncryptUtils;
 import com.drom.dromtesttask.common.utils.NetworkUtils;
-import com.drom.dromtesttask.model.RepositoryItemDTO;
-import com.drom.dromtesttask.model.UserDTO;
+import com.drom.dromtesttask.data.model.RepositoryItemDTO;
+import com.drom.dromtesttask.data.model.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,37 +17,35 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import retrofit2.Response;
 
-public class RestClientImpl implements RestClient {
+public class RestClientImpl
+        implements RestClient
+{
+    @NonNull private RestApi restApi;
+    @NonNull private ConnectivityManager connMgr;
 
-    private RestApi restApi;
-    private ConnectivityManager connMgr;
-
-    public RestClientImpl(Context context, RestApi restApi) {
+    public RestClientImpl( @NonNull final Context context, @NonNull final RestApi restApi ){
         this.restApi = restApi;
-        connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
-
-    // region - Interface -
-
     @Override
-    public Observable<Boolean> isNetworkConnectionAsync() {
+    public Observable<Boolean> isNetworkConnectionAsync(){
         return Observable.just(isNetworkConnection());
     }
 
     @Override
-    public boolean isNetworkConnection() {
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    public boolean isNetworkConnection(){
+        final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
     @Override
-    public Observable<UserDTO> requestAuth( String login, String password) {
-
-        String value = generateHeaderAuth(login, password);
+    @NonNull
+    public Observable<UserDTO> requestAuth( @NonNull final String login, @NonNull final String password ){
+        final String value = EncryptUtils.encodeLoginData(login, password);
 
         return restApi.requestAuth(value)
-                .map(response -> {
+                .map(response->{
                     checkResponse(response);
                     return response.body();
                 })
@@ -54,13 +53,14 @@ public class RestClientImpl implements RestClient {
     }
 
     @Override
-    public Observable<List<RepositoryItemDTO>> requestSearchRepositories( String param, int page) {
-        return restApi.requestSearchRepositories(param, page)
-                .map(response -> {
+    @NonNull
+    public Observable<List<RepositoryItemDTO>> requestRepositories( @NonNull final String param, final int page ){
+        return restApi.requestRepositories(param, page)
+                .map(response->{
                     checkResponse(response);
 
-                    List<RepositoryItemDTO> listRepository = response.body().getItems();
-                    if (listRepository == null) {
+                    final List<RepositoryItemDTO> listRepository = response.body().getItems();
+                    if( listRepository == null ){
                         return new ArrayList<RepositoryItemDTO>();
                     }
 
@@ -69,23 +69,9 @@ public class RestClientImpl implements RestClient {
                 .timeout(NetworkUtils.WAIT_TIMEOUT, TimeUnit.SECONDS);
     }
 
-    // endregion
-
-
-    // region - Methods -
-
-    private void checkResponse(Response response) throws RuntimeException {
-        if (!response.isSuccessful()) {
+    private void checkResponse( @NonNull final Response response ) throws RuntimeException{
+        if( !response.isSuccessful() ){
             throw new RuntimeException(String.valueOf(response.code()));
         }
     }
-
-    private String generateHeaderAuth(String login, String password) {
-        String encode = Base64.encodeToString((login + ":" + password)
-                .getBytes(), Base64.DEFAULT).replace("\n", "");
-
-        return "Basic " + encode;
-    }
-
-    // endregion
 }

@@ -27,7 +27,7 @@ public class BasePresenter<V extends MvpView>
         return component;
     }
 
-    protected void unsubscribeOnDestroy( @NonNull Disposable disposable ){
+    protected void unsubscribeOnDestroy( @NonNull final Disposable disposable ){
         compositeSubscription.add(disposable);
     }
 

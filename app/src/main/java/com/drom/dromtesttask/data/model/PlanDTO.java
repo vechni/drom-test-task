@@ -1,4 +1,4 @@
-package com.drom.dromtesttask.model;
+package com.drom.dromtesttask.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
