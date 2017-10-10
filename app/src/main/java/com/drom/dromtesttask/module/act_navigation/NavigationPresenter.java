@@ -145,6 +145,7 @@ public class NavigationPresenter
         }
     }
 
+    @NonNull
     private List<RepositoryViewModel> mapToViewModel( @NonNull final List<RepositoryItemDTO> items ){
         final List<RepositoryViewModel> list = new ArrayList<>();
         for( RepositoryItemDTO item : items ){
